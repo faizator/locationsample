@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.thread
 
 class LocationService : Service() {
@@ -14,6 +16,7 @@ class LocationService : Service() {
     private val locationProvider = LocationProvider()
     private val networkManager = NetworkManager()
 
+    @Volatile
     private var isRunning = true
 
     override fun onCreate() {
@@ -53,7 +56,7 @@ class LocationService : Service() {
 
     companion object {
 
-        val locationSet: MutableSet<Location> = mutableSetOf()
+        val locationSet = Collections.newSetFromMap(ConcurrentHashMap<Location, Boolean>())
 
         val locationUpdateListeners: MutableSet<LocationSetUpdateListener> = mutableSetOf()
     }
